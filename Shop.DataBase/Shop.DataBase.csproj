@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{59FC3922-96D9-4D66-B7D1-7ADA167D5FE2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Shop.DataBase</RootNamespace>
+    <AssemblyName>Shop.DataBase</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Migrations\202003211216470_initialized.cs" />
+    <Compile Include="Migrations\202003211216470_initialized.Designer.cs">
+      <DependentUpon>202003211216470_initialized.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202003211402386_addedIsFeatured.cs" />
+    <Compile Include="Migrations\202003211402386_addedIsFeatured.Designer.cs">
+      <DependentUpon>202003211402386_addedIsFeatured.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006071349169_configstable.cs" />
+    <Compile Include="Migrations\202006071349169_configstable.Designer.cs">
+      <DependentUpon>202006071349169_configstable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006091431044_ImageURLAdded.cs" />
+    <Compile Include="Migrations\202006091431044_ImageURLAdded.Designer.cs">
+      <DependentUpon>202006091431044_ImageURLAdded.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006131402162_addedBasicValidations.cs" />
+    <Compile Include="Migrations\202006131402162_addedBasicValidations.Designer.cs">
+      <DependentUpon>202006131402162_addedBasicValidations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SHContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shop.Entities\Shop.Entities.csproj">
+      <Project>{011f490e-f98e-4808-8935-3a074ca44888}</Project>
+      <Name>Shop.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202003211216470_initialized.resx">
+      <DependentUpon>202003211216470_initialized.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003211402386_addedIsFeatured.resx">
+      <DependentUpon>202003211402386_addedIsFeatured.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006071349169_configstable.resx">
+      <DependentUpon>202006071349169_configstable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006091431044_ImageURLAdded.resx">
+      <DependentUpon>202006091431044_ImageURLAdded.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006131402162_addedBasicValidations.resx">
+      <DependentUpon>202006131402162_addedBasicValidations.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

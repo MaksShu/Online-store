@@ -1,0 +1,96 @@
+﻿@model Shop.Web.ViewModels.EditCategoryViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    var trueChecked = Model.isFeatured ? "checked" : string.Empty;
+    var falseChecked = !Model.isFeatured ? "checked" : string.Empty;
+}
+
+    <form id="editCategory">
+        <h3>Редагування категорії</h3>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <input type="hidden" name="ID" value="@Model.ID" />
+                </div>
+                <div class="form-group">
+                    <label>Ім'я</label>
+                    <input name="Name" class="form-control" value="@Model.Name" />
+                </div>
+                <div class="form-group">
+                    <label>Опис</label>
+                    <input name="Description" class="form-control" value="@Model.Description" />
+                </div>
+                <div class="form-group">
+                    <label>Зображення</label>
+                    <input id="ImageURL" name="ImageURL" type="hidden" src="@Model.ImageURL" value="@Model.ImageURL" />
+                    <input class="form-control" id="imageUpload" name="Image" type="file" accept=".png, .jpg" />
+                </div>
+                <div class="form-group">
+                    <label>Запропонувати?</label>
+                    <div class="input-group">
+                        <div class="radio form-control"><input name="isFeatured" type="radio" value="True" @trueChecked />Так</div>
+                        <div class="radio form-control"><input name="isFeatured" type="radio" value="False" @falseChecked />Ні</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="thumb">
+                    <img class="img-thumbnail img-fluid" id="categoryImage" src="@Model.ImageURL" />
+                </div>
+            </div>
+        </div>
+        <button type="button" id="updateBtn" class="btn btn-primary">Зберегти</button>
+        <button id="cancelBtn" type="button" class="btn btn-primary">Назад</button>
+    </form>
+
+
+
+    <script>
+        $("#cancelBtn").click(function () {
+            $("#actionContainer").html("");
+            $("#tableContainer").html(response);
+        });
+
+        $("#imageUpload").change(function () {
+        debugger;
+        var element = this;
+        var formData = new FormData();
+        var totalFile = element.files.length;
+        for (var i = 0; i < totalFile; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file);
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/Shared/UploadImage/',
+            dataType: 'json',
+            data: formData,
+            contentType: false,
+            processData: false
+        }).done(function (response) {
+            debugger;
+            console.log(response);
+            if (response.Success) {
+                $("#ImageURL").val(response.ImageURL);
+                $("#categoryImage").attr("src", response.ImageURL);
+            }
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+                alert("FAIL");
+            });
+        
+    });
+    $("#updateBtn").click(function () {
+        $.ajax({
+            type:'POST',
+            url: '/Category/Edit',
+            data: $("#editCategory").serialize()
+
+        }).done(function (response) {
+            $("#tableContainer").html(response);
+            $("#actionContainer").html("");
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    </script>

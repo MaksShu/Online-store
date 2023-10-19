@@ -1,0 +1,29 @@
+﻿@model List<Category>
+
+@{
+    ViewBag.Title = "Категорії";
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<section class="flat-row flat-iconbox">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="title-section">
+                    <div class="title">
+                        Категорії
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tableContainer">
+            @{ 
+                Html.RenderAction("CategoryTable");
+            }
+        </div>
+        <div id="actionContainer">
+
+        </div>
+    </div>
+</section>
+

@@ -1,0 +1,13 @@
+﻿@model Category
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h1>Ви дійсно хочете видалити дану категорію?</h1>
+<form method="post">
+    <h2>Видалення категорії</h2>
+    <input type="hidden" name="ID" value="@Model.ID" />
+    <button type="submit">Так, видалити</button>
+</form>
+<button href="/Index">Відмінити</button>

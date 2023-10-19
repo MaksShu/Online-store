@@ -1,0 +1,179 @@
+﻿@model Shop.Web.ViewModels.ProductSearchViewModel
+
+@{
+    ViewBag.Title = "ProductTable";
+}
+
+<div>
+    <form method="post">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Пошук</label>
+                    <input class="form-control"  id="searchTxt" name="Search" value="@Model.SearchTerm"/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Дії</label>
+                    <div class="row">
+                        <div class="col-md-4 pr-0">
+                            <button class="form-control" type="button" id="searchBtn">Пошук</button>
+                        </div>
+                        <div class="col-md-4 pr-0">
+                            <button class="btn btn-primary form-control" type="button" id="resetBtn">Скинути</button>
+                        </div>
+                        <div class="col-md-4 pr-0">
+                            <button class="form-control" type="button" id="newBtn">Новий</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>           
+    </form>
+    
+</div>
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td scope="col">Назва продукту</td>
+                <td scope="col">Категорія</td>
+                <td scope="col">Ціна</td>
+                <td scope="col" class="wrap-td">Дії</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Products != null && Model.Products.Count > 0)
+            {
+                foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td scope="row">@product.Name</td>
+                        <td>
+                            @if (product.Category != null)
+                            {
+                                <text>@product.Category.Name</text>
+                            }
+                            else
+                            {
+                                <text>-</text>
+                            }
+                        </td>
+                        <td>@product.Price</td>
+                        <td class="wrap-td">
+                            <button class="editBtn" data-id="@product.ID">Редагувати</button>
+                            <button class="deleteBtn" data-id="@product.ID">Видалити</button>
+                            <button class="addBtn" data-id="@product.ID">Додати в кошик</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr><td scope="row" class="text-danger" colspan="4">Товарів не знайдено.</td></tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        @if (Model.PageNo != 1)
+        {
+            <button class="pageBtns" data-pageno="@(Model.PageNo-1)">Назад</button>
+        }
+
+        <button class="pageBtns" data-pageno="@(Model.PageNo+1)">Вперед</button>
+    </div>
+</div>
+<script>
+
+    $(".pageBtns").click(function () {
+        $.ajax({
+            url: '/Product/ProductTable',
+            data: {
+                pageNo: $(this).attr("data-pageno")
+            }
+        }).done(function (response) {
+            $("#tableContainer").html(response);
+        })
+            .fail(function (XMLHttprequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+
+    $("#resetBtn").click(function () {
+        var searchValue = '';
+        $.ajax({
+            url: '@Url.Action("ProductTable","Product")',
+            data: {
+                search:searchValue
+            }
+        }).done(function (response) {
+            $("#tableContainer").html(response);
+        }).fail(function (XMLHttprequest,textStatus,errorThrow) {
+            alert("FAIL");
+        })
+    });
+
+    var products = [];
+    $('.addBtn').click(function () {
+        var productID = $(this).attr('data-id');
+        products.push(productID);
+        $.cookie("CartProducts", products.join('-'), {path:'/'});
+        alert("Product added to Cart");
+    });
+    $("#searchBtn").click(function () {
+        var searchValue = $("#searchTxt").val();
+        $.ajax({
+            url: '/Product/ProductTable',
+            data: { search: searchValue }
+
+        }).done(function (response) {
+            $("#tableContainer").html(response);
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    $("#newBtn").click(function () {
+        $.ajax({ url: '/Product/Create/', }).done(function (response) {
+            $("#actionContainer").html(response);
+            focusAction();
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    $(".editBtn").click(function () {
+        $.ajax({
+            url: '/Product/Edit',
+            data: {
+                ID: $(this).attr('data-id')
+            } 
+            }).done(function (response) {
+                $("#actionContainer").html(response);
+                focusAction();
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    $(".deleteBtn").click(function () {
+        var confirmDelete = confirm("Ви справді хочете видалити даний продукт?");
+        if (confirmDelete == true) {
+            $.ajax({
+                type: 'POST',
+                url: '/Product/Delete',
+                data: { ID: $(this).attr('data-id') }
+            }).done(function (response) {
+                $("#tableContainer").html(response);
+                focusAction();
+            }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+                alert("FAIL");
+            });
+        }
+    });
+
+    function focusAction() {
+        $('html, body').animate({
+            scrollTop:$("#actionContainer").offset().top -100
+        },1000);
+    }
+</script>

@@ -1,0 +1,175 @@
+﻿@model Shop.Web.ViewModels.CategorySearchViewModel
+
+@{
+    ViewBag.Title = "CategoryTable";
+}
+
+<div>
+    <form method="post">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Пошук</label>
+                    <input class="form-control" id="searchTxt" name="Search" value="@Model.SearchTerm"/>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Дії</label>
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-md-4 pr-0">
+                                <button class="form-control" type="button" id="searchBtn">Пошук</button>
+                            </div>
+                            <div class="col-md-4 pr-0">
+                                <button class="btn btn-primary form-control" type="button" id="resetBtn">Скинути</button>
+                            </div>
+                            <div class="col-md-4 pr-0">
+                                <button class="form-control" type="button" id="newBtn">Новий</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+
+<div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td scope="col">Назва категорії</td>
+                <td scope="col">Товари</td>
+                <td scope="col" class="wrap-td">Дії</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Categories != null && Model.Categories.Count > 0)
+            {
+            foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <td scope="row">@category.Name</td>
+                    <td>
+                       @category.Products.Count
+                    </td>
+                    <td class="wrap-td">
+                        <button class="editBtn" data-id="@category.ID">Редагувати</button>
+                        <button class="deleteBtn" data-id="@category.ID">Видалити</button>
+                    </td>
+                </tr>
+            }
+            }
+            else
+            {
+                <tr><td colspan="3" class="text-danger" scope="row">Категорій не знайдено.</td></tr>
+            }
+        </tbody>
+    </table>
+    <div>
+        @if (Model.Pager != null)
+        {
+            if (Model.Pager.CurrentPage > 1)
+            {
+                <button class="pageButtons" data-pageno="1">First</button>
+                <button class="pageButtons" data-pageno="@(Model.Pager.CurrentPage-1)">Previous</button>
+            }
+            for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+            {
+                string activeClass = Model.Pager.CurrentPage == page ? "active bginfo" : string.Empty;
+                <button class="@activeClass pageButtons" data-pageno="@page">@page</button>
+            }
+            if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+            {
+                <button class="pageButtons" data-pageno="@(Model.Pager.CurrentPage+1)">Next</button>
+                <button class="pageButtons" data-pageno="@Model.Pager.EndPage">Last</button>
+            }
+        }
+    </div>
+</div>
+<script>
+
+    $(".pageButtons").click(function () {
+        $.ajax({
+            url: '/Category/CategoryTable',
+            data: {
+                pageNo: $(this).attr("data-pageno")
+            }
+        }).done(function (response) {
+            $("#tableContainer").html(response);
+        })
+            .fail(function (XMLHttprequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+
+     $("#resetBtn").click(function () {
+        var searchValue = '';
+         $.ajax({
+             url: '@Url.Action("CategoryTable","Category")',
+             data: {
+                 search: searchValue
+             }
+         }).done(function (response) {
+             $("#tableContainer").html(response);
+         }).fail(function (XMLHttprequest, textStatus, errorThrow) {
+             alert("FAIL");
+         });
+    });
+
+    $("#searchBtn").click(function () {
+        var searchValue = $("#searchTxt").val();
+        $.ajax({
+            url: '/Category/CategoryTable',
+            data: { search: searchValue }
+
+        }).done(function (response) {
+            $("#tableContainer").html(response);
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    $("#newBtn").click(function () {
+        $.ajax({ url: '/Category/Create/', }).done(function (response) {
+            $("#actionContainer").html(response);
+            focusAction();
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    $(".editBtn").click(function () {
+        $.ajax({
+            url: '/Category/Edit',
+            data: {
+                ID: $(this).attr('data-id')
+            }
+            }).done(function (response) {
+                $("#actionContainer").html(response);
+                focusAction();
+        }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+            alert("FAIL");
+        });
+    });
+    $(".deleteBtn").click(function () {
+        var confirmDelete = confirm("Ви справді хочете видалити дану категорію?");
+        if (confirmDelete == true) {
+            $.ajax({
+                type: 'POST',
+                url: '/Category/Delete',
+                data: { ID: $(this).attr('data-id') }
+            }).done(function (response) {
+                $("#tableContainer").html(response);
+            }).fail(function (XMlHttpRequest, textStatus, errorThrow) {
+                alert("FAIL");
+            });
+        }
+    });
+
+    function focusAction() {
+        $('html, body').animate({
+            scrollTop:$("#actionContainer").offset().top -100
+        },1000);
+    }
+</script>
